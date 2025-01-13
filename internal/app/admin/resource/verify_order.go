@@ -5,6 +5,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
+	"gorm.io/gorm"
 )
 
 type VerifyOrder struct {
@@ -24,6 +25,11 @@ func (p *VerifyOrder) Init(ctx *quark.Context) interface{} {
 	p.PageSize = 10
 
 	return p
+}
+
+// 查询类型
+func (p *VerifyOrder) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	return query.Where("shipping_type = ?", 2).Where("status = ?", 2)
 }
 
 func (p *VerifyOrder) Fields(ctx *quark.Context) []interface{} {

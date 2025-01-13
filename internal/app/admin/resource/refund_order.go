@@ -5,6 +5,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
+	"gorm.io/gorm"
 )
 
 type RefundOrder struct {
@@ -24,6 +25,11 @@ func (p *RefundOrder) Init(ctx *quark.Context) interface{} {
 	p.PageSize = 10
 
 	return p
+}
+
+// 查询类型
+func (p *RefundOrder) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	return query.Where("status < ?", 0)
 }
 
 func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
