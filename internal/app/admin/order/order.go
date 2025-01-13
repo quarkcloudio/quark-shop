@@ -4,22 +4,40 @@ import "github.com/quarkcloudio/quark-go/v3/template/admin/component/component"
 
 type Component struct {
 	component.Element
-	InitApi         string     `json:"initApi"`
-	Icon            string     `json:"icon"`
-	OrderNoText     string     `json:"orderNoText"`
-	OrderDetailText string     `json:"orderDetailText"`
-	OrderItemText   string     `json:"orderItemText"`
-	OrderStatusText string     `json:"orderStatusText"`
-	OrderNo         string     `json:"orderNo"`
-	Info            Info       `json:"info"`
-	DetailInfo      DetailInfo `json:"detailInfo"`
-	ItemInfo        ItemInfo   `json:"itemInfo"`
-	StatusInfo      StatusInfo `json:"statusInfo"`
+	InitApi         string `json:"initApi"`
+	Icon            string `json:"icon"`
+	OrderNoText     string `json:"orderNoText"`
+	OrderDetailText string `json:"orderDetailText"`
+	OrderItemText   string `json:"orderItemText"`
+	OrderStatusText string `json:"orderStatusText"`
+	OrderNo         string `json:"orderNo"`
+	Info            Info   `json:"info"`
+	DetailInfo      Detail `json:"detailInfo"`
+	ItemInfo        Table  `json:"itemInfo"`
+	StatusInfo      Table  `json:"statusInfo"`
+}
+
+type Column struct {
+	Title     string `json:"title"`
+	DataIndex string `json:"dataIndex"`
+}
+
+type Item struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
 }
 
 // 初始化组件
 func New() *Component {
 	return (&Component{}).Init()
+}
+
+func NewColumn(dataIndex string, title string) Column {
+	return Column{title, dataIndex}
+}
+
+func NewItem(key string, label string) Item {
+	return Item{key, label}
 }
 
 // 初始化
