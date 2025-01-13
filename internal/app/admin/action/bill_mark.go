@@ -18,14 +18,11 @@ type BillMarkAction struct {
 
 // 资金流水备注
 func BillMark(name string) *BillMarkAction {
-
 	action := &BillMarkAction{}
-
 	action.Name = "备注"
 	if name != "" {
 		action.Name = name
 	}
-
 	return action
 }
 
@@ -57,7 +54,6 @@ func (p *BillMarkAction) Init(ctx *quark.Context) interface{} {
 
 // 字段
 func (p *BillMarkAction) Fields(ctx *quark.Context) []interface{} {
-
 	field := &resource.Field{}
 
 	return []interface{}{
@@ -74,11 +70,8 @@ func (p *BillMarkAction) Fields(ctx *quark.Context) []interface{} {
 
 // 表单数据（异步获取）
 func (p *BillMarkAction) Data(ctx *quark.Context) map[string]interface{} {
-
 	id, _ := strconv.Atoi(ctx.Query("id").(string))
-
 	bill := service.NewBillService().GetInfoById(id)
-
 	return map[string]interface{}{
 		"id":   id,
 		"mark": bill.Mark,
@@ -87,19 +80,15 @@ func (p *BillMarkAction) Data(ctx *quark.Context) map[string]interface{} {
 
 // 执行行为句柄
 func (p *BillMarkAction) Handle(ctx *quark.Context, query *gorm.DB) error {
-
 	var param struct {
 		Id   int    `json:"id"`
 		Mark string `json:"mark"`
 	}
-
 	if err := ctx.Bind(&param); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-
 	if err := service.NewBillService().UpdateMarkById(param.Id, param.Mark); err != nil {
 		return ctx.JSON(200, message.Error("操作失败"))
 	}
-
 	return ctx.JSON(200, message.Success("操作成功"))
 }

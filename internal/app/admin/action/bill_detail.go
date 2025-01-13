@@ -13,14 +13,11 @@ type BillDetailAction struct {
 
 // 账单详情
 func BillDetail(name string) *BillDetailAction {
-
 	action := &BillDetailAction{}
-
 	action.Name = "账单详情"
 	if name != "" {
 		action.Name = name
 	}
-
 	return action
 }
 
