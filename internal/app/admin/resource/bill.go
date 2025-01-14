@@ -110,6 +110,10 @@ func (p *Bill) Fields(ctx *quark.Context) []interface{} {
 					Label: "线下支付",
 					Value: "OFFLINE_PAY",
 				},
+				{
+					Label: "余额支付",
+					Value: "YUE_PAY",
+				},
 			}).
 			SetColumnWidth(100),
 

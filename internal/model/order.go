@@ -21,8 +21,8 @@ type Order struct {
 	PayPrice              float64           `json:"pay_price" gorm:"not null;default:0.00;comment:实际支付金额"`                                      // 实际支付金额
 	Paid                  uint8             `json:"paid" gorm:"not null;default:0;comment:支付状态"`                                                // 支付状态
 	PayTime               datetime.Datetime `json:"pay_time" gorm:"type:datetime(0);comment:支付时间"`                                              // 支付时间
-	PayType               string            `json:"pay_type" gorm:"not null;comment:支付方式"`                                                      // 支付方式
-	Status                uint8             `json:"status" gorm:"not null;default:0;comment:订单状态(-1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成)"` // 订单状态
+	PayType               string            `json:"pay_type" gorm:"not null;comment:支付方式:WECHAT_PAY,ALI_PAY,OFFLINE_PAY,YUE_PAY"`               // 支付方式
+	Status                int               `json:"status" gorm:"not null;default:0;comment:订单状态(-1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成)"` // 订单状态
 	RefundStatus          uint8             `json:"refund_status" gorm:"not null;default:0;comment:0:未退款,1:申请中,2:已退款"`                          // 退款状态
 	RefundReasonImg       string            `json:"refund_reason_img" gorm:"comment:退款图片"`                                                      // 退款图片
 	RefundReasonExplain   string            `json:"refund_reason_explain" gorm:"comment:退款用户说明"`                                                // 退款用户说明

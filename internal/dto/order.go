@@ -18,9 +18,12 @@ type OrderDTO struct {
 	Paid                  uint8             `json:"paid"`                    // 支付状态
 	PayTime               datetime.Datetime `json:"pay_time"`                // 支付时间
 	PayType               string            `json:"pay_type"`                // 支付方式
+	PayTypeText           string            `json:"pay_type_text"`           // 支付方式文本
 	OrderDetails          []OrderDetailDTO  `json:"orderDetails"`            // 订单详细信息
-	Status                uint8             `json:"status"`                  // 订单状态
+	Status                int               `json:"status"`                  // 订单状态
+	StatusText            string            `json:"status_text"`             // 订单状态文本
 	RefundStatus          uint8             `json:"refund_status"`           // 退款状态
+	RefundStatusText      string            `json:"refund_status_text"`      // 退款状态文本
 	RefundReasonImg       string            `json:"refund_reason_img"`       // 退款图片
 	RefundReasonExplain   string            `json:"refund_reason_explain"`   // 退款用户说明
 	RefundReason          string            `json:"refund_reason"`           // 前台退款原因
