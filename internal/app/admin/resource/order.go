@@ -106,9 +106,13 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.Hidden("id"),
 
-		field.Hidden("paid", "PAID"),
+		field.Hidden("paid"),
+
+		field.Hidden("shipping_type"),
+
+		field.Hidden("status"),
 
 		field.Text("order_no", "订单号").SetColumnWidth(200),
 
@@ -154,7 +158,7 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 		field.Text("pay_time", "支付时间"),
 
 		// 0:待发货:,1:待收货,2:已收货,待评价,3:已完成
-		field.Radio("status", "订单状态", func(row map[string]interface{}) interface{} {
+		field.Radio("status_text", "订单状态", func(row map[string]interface{}) interface{} {
 			if row["paid"].(uint8) == 0 {
 				return "未付款"
 			}

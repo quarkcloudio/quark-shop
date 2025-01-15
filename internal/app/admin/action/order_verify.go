@@ -24,7 +24,7 @@ func OrderVerify() *OrderVerifyAction {
 func (p *OrderVerifyAction) Init(ctx *quark.Context) interface{} {
 
 	// 设置按钮文字
-	p.Name = "<%= (paid==0 && '立即核销') %>"
+	p.Name = "<%= ((paid===1 && status<3 && shipping_type===2) && '立即核销') %>"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
