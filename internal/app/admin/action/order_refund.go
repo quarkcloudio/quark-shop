@@ -57,7 +57,9 @@ func (p *OrderRefundAction) Fields(ctx *quark.Context) []interface{} {
 		field.Hidden("id", "ID"),
 		field.Display("订单号", "${order_no}"),
 		field.Display("退款信息", "付款金额(${pay_price})  已退金额(${has_refund_price})  剩余可退(${can_refund_price})"),
-		field.Number("refund_price", "退款金额").SetPlaceholder("请输入退款金额"),
+		field.Number("refund_price", "退款金额").
+			SetRequired().
+			SetPlaceholder("请输入退款金额"),
 	}
 }
 
