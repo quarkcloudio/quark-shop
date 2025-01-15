@@ -44,6 +44,7 @@ func (p *OrderRefundAction) Init(ctx *quark.Context) interface{} {
 	// 行为接口接收的参数
 	p.SetApiParams([]string{
 		"id",
+		"pay_price",
 	})
 
 	return p
@@ -54,9 +55,9 @@ func (p *OrderRefundAction) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 	return []interface{}{
 		field.Hidden("id", "ID"),
-		field.Display("支付金额${pay_price}"),
-		field.Display("可退款金额${pay_price}"),
-		field.Number("refund_price", "退款金额").SetPlaceholder("请输入退款金额"),
+		field.Display("支付金额"),
+		field.Number("refund_price", "退款金额").
+			SetPlaceholder("请输入退款金额"),
 	}
 }
 
