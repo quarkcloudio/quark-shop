@@ -59,13 +59,7 @@ func (p *VerifyOrder) Fields(ctx *quark.Context) []interface{} {
 // 搜索
 func (p *VerifyOrder) Searches(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		searches.Input("title", "标题"),
-		searches.Status(),
-		searches.DatetimeRange("created_at", "创建时间"),
+		searches.Input("order_no", "订单号"),
+		searches.DatetimeRange("pay_time", "支付时间"),
 	}
-}
-
-// 行为
-func (p *VerifyOrder) Actions(ctx *quark.Context) []interface{} {
-	return []interface{}{}
 }
