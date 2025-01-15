@@ -147,7 +147,9 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 			return row["pay_price"]
 		}),
 
-		field.Text("pay_type", "支付方式"),
+		field.Text("pay_type", "支付方式", func(row map[string]interface{}) interface{} {
+			return service.NewOrderService().GetPayTypeText(row["pay_type"].(string))
+		}),
 
 		field.Text("pay_time", "支付时间"),
 

@@ -87,14 +87,11 @@ func (p *OrderService) GetRefundStatusText(order model.Order) string {
 }
 
 // 获取支付方式文本
-func (p *OrderService) GetPayTypeText(order model.Order) string {
+func (p *OrderService) GetPayTypeText(payType string) string {
 	text := ""
-	if order.Paid == 0 {
-		return ""
-	}
 
 	// WECHAT_PAY,ALI_PAY,OFFLINE_PAY,YUE_PAY
-	switch order.PayType {
+	switch payType {
 	case "WECHAT_PAY":
 		text = "微信支付"
 	case "ALI_PAY":
@@ -227,7 +224,7 @@ func (p *OrderService) GetOrder(uid, orderId interface{}) (orderDto dto.OrderDTO
 		Paid:                  order.Paid,
 		PayTime:               order.PayTime,
 		PayType:               order.PayType,
-		PayTypeText:           p.GetPayTypeText(order),
+		PayTypeText:           p.GetPayTypeText(order.PayType),
 		OrderDetails:          orderDetails,
 		Status:                order.Status,
 		StatusText:            p.GetStatusText(order),
