@@ -35,7 +35,7 @@ type Order struct {
 	IsMerchantCheck       uint8             `json:"is_merchant_check" gorm:"not null;default:0;comment:是否由商户核销"`                                // 是否已核销
 	Cost                  float64           `json:"cost" gorm:"not null;comment:成本价"`                                                           // 成本价
 	VerifyCode            string            `json:"verify_code" gorm:"not null;default:'';comment:核销码"`                                         // 核销码
-	ShippingType          uint8             `json:"shipping_type" gorm:"not null;default:1;comment:配送方式:1=快递,2=门店自提"`                           // 配送方式
+	ShippingType          uint8             `json:"shipping_type" gorm:"not null;default:2;comment:配送方式:1=快递,2=门店自提"`                           // 配送方式
 	ClerkId               int               `json:"clerk_id" gorm:"not null;default:0;comment:店员id/核销员id"`                                      // 店员id/核销员id
 	IsCancel              int               `json:"is_cancel" gorm:"not null;default:0;comment:是否取消订单(0:否,1:是)"`                                // 是否取消订单
 	IsAllRefund           int               `json:"is_all_refund" gorm:"not null;default:0;comment:是否全部退款(0:否,1:是)"`                            // 是否全部退款
