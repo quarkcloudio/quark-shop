@@ -589,6 +589,17 @@ func (p *OrderService) Verify(orderId interface{}, verifyCode interface{}) (err 
 }
 
 // 管理后台根据订单id核销
-func (p *OrderService) VerifyById(orderId interface{}) (err error) {
+func (p *OrderService) VerifyBySystem(orderId interface{}) (err error) {
+	if orderId == nil {
+		return errors.New("参数错误")
+	}
 	return p.Verify(orderId, nil)
+}
+
+// 用户根据订单id核销
+func (p *OrderService) VerifyByUser(orderId interface{}, verifyCode interface{}) (err error) {
+	if orderId == nil || verifyCode == nil {
+		return errors.New("参数错误")
+	}
+	return p.Verify(orderId, verifyCode)
 }

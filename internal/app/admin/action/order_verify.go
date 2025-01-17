@@ -65,7 +65,7 @@ func (p *OrderVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
-			err = service.NewOrderService().VerifyById(idInt)
+			err = service.NewOrderService().VerifyBySystem(idInt)
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
@@ -75,7 +75,7 @@ func (p *OrderVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 		if err != nil {
 			return ctx.JSON(200, message.Error(err.Error()))
 		}
-		err = service.NewOrderService().VerifyById(idInt)
+		err = service.NewOrderService().VerifyBySystem(idInt)
 		if err != nil {
 			return ctx.JSON(200, message.Error(err.Error()))
 		}

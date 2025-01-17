@@ -65,14 +65,14 @@ func (p *OrderBatchVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) erro
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
-			service.NewOrderService().VerifyById(idInt)
+			service.NewOrderService().VerifyBySystem(idInt)
 		}
 	} else {
 		idInt, err := strconv.Atoi(id.(string))
 		if err != nil {
 			return ctx.JSON(200, message.Error(err.Error()))
 		}
-		service.NewOrderService().VerifyById(idInt)
+		service.NewOrderService().VerifyBySystem(idInt)
 	}
 
 	return ctx.JSON(200, message.Success("操作成功"))
