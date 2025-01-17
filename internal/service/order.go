@@ -585,6 +585,17 @@ func (p *OrderService) Refund(orderId interface{}, refundPrice float64) (err err
 
 // 订单核销
 func (p *OrderService) Verify(orderId interface{}, verifyCode interface{}) (err error) {
+	order := model.Order{}
+	err = db.Client.Where("id = ?", orderId).First(&order).Error
+	if err != nil {
+		return
+	}
+	if verifyCode != nil {
+		if order.VerifyCode != verifyCode {
+			return errors.New("核销码错误")
+
+		}
+	}
 	return
 }
 
