@@ -25,8 +25,8 @@ type Order struct {
 	Status                int               `json:"status" gorm:"not null;default:0;comment:订单状态(-1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成)"` // 订单状态
 	RefundStatus          uint8             `json:"refund_status" gorm:"not null;default:0;comment:0:未退款,1:申请中,2:已退款"`                          // 退款状态
 	RefundReasonImg       string            `json:"refund_reason_img" gorm:"comment:退款图片"`                                                      // 退款图片
-	RefundReasonExplain   string            `json:"refund_reason_explain" gorm:"comment:退款用户说明"`                                                // 退款用户说明
-	RefundReason          string            `json:"refund_reason" gorm:"comment:前台退款原因"`                                                        // 前台退款原因
+	RefundReasonExplain   string            `json:"refund_reason_explain" gorm:"comment:退款申请说明：衣服开线了..."`                                       // 退款用户说明
+	RefundReason          string            `json:"refund_reason" gorm:"comment:退款原因：不想要了"`                                                     // 前台退款原因
 	RefundRejectionReason string            `json:"refund_rejection_reason" gorm:"comment:不退款的理由"`                                              // 不退款的理由
 	RefundReasonTime      datetime.Datetime `json:"refund_reason_time" gorm:"type:datetime(0);comment:申请退款时间"`                                  // 退款时间
 	RefundPrice           float64           `json:"refund_price" gorm:"not null;default:0.00;comment:退款金额"`                                     // 退款金额

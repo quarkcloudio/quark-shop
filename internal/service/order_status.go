@@ -1,96 +1,102 @@
 package service
 
 import (
+	"strconv"
+	"strings"
+
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 )
 
-type OrderStatusService struct{}
-
-func NewOrderStatusService() *OrderStatusService {
-	return &OrderStatusService{}
+type ChangeTypeItem = struct {
+	Type    string
+	Message string
 }
 
-// 获取订单状态文本
-func (p *OrderStatusService) GetStatusText(order model.Order) string {
-	statusText := ""
-	if order.Paid == 0 {
-		return "待支付"
-	}
-
-	// -1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成
-	if order.ShippingType == 1 {
-		switch order.Status {
-		case -2:
-			statusText = "退款成功"
-		case -1:
-			statusText = "申请退款"
-		case 0:
-			statusText = "待发货"
-		case 1:
-			statusText = "待收货"
-		case 2:
-			statusText = "已收货,待评价"
-		case 3:
-			statusText = "已完成"
-		}
-	}
-
-	// -1:申请退款;-2:退款成功;0:待核销;1:待核销;2:已核销;3:已完成
-	if order.ShippingType == 2 {
-		switch order.Status {
-		case -2:
-			statusText = "退款成功"
-		case -1:
-			statusText = "申请退款"
-		case 0:
-			statusText = "待核销"
-		case 1:
-			statusText = "待核销"
-		case 2:
-			statusText = "已核销"
-		case 3:
-			statusText = "已完成"
-		}
-	}
-
-	return statusText
+type OrderStatusService struct {
+	OrderId        int
+	CreateOrder    ChangeTypeItem
+	PaySuccess     ChangeTypeItem
+	DeliveryGoods  ChangeTypeItem
+	TakeDelivery   ChangeTypeItem
+	CheckOrderOver ChangeTypeItem
+	ApplyRefund    ChangeTypeItem
+	RefundPrice    ChangeTypeItem
 }
 
-// 获取退款状态文本
-func (p *OrderStatusService) GetRefundStatusText(order model.Order) string {
-	statusText := ""
-	if order.Paid == 0 {
-		return ""
+// 操作类型
+// create_order:订单生成;
+// pay_success:用户付款成功;
+// delivery_goods:已发货 快递公司：圆通速递 快递单号：YT46466545445555;
+// take_delivery:已收货;
+// check_order_over:用户评价;
+// apply_refund:用户申请退款，原因：收货地址填错了;
+// refund_price:退款给用户：124.63元
+func NewOrderStatusService(orderId int) *OrderStatusService {
+	service := &OrderStatusService{
+		orderId,
+		ChangeTypeItem{"create_order", "订单生成"},
+		ChangeTypeItem{"pay_success", "用户付款成功"},
+		ChangeTypeItem{"delivery_goods", "已发货 快递公司：{company} 快递单号：{number}"},
+		ChangeTypeItem{"take_delivery", "已收货"},
+		ChangeTypeItem{"check_order_over", "用户评价"},
+		ChangeTypeItem{"apply_refund", "用户申请退款，原因：{reason}"},
+		ChangeTypeItem{"refund_price", "退款给用户：{price}元"},
 	}
-
-	// 0:未退款,1:申请中,2:已退款
-	switch order.RefundStatus {
-	case 0:
-		statusText = "未退款"
-	case 1:
-		statusText = "申请中"
-	case 2:
-		statusText = "已退款"
-	}
-
-	return statusText
+	return service
 }
 
-// 获取支付方式文本
-func (p *OrderStatusService) GetPayTypeText(payType string) string {
-	text := ""
+// 根据订单id获取订单记录列表
+func (p *OrderStatusService) GetList() (statuses []model.OrderStatus, err error) {
+	err = db.Client.Where("order_id = ?", p.OrderId).Find(&statuses).Error
+	return
+}
 
-	// WECHAT_PAY,ALI_PAY,OFFLINE_PAY,YUE_PAY
-	switch payType {
-	case "WECHAT_PAY":
-		text = "微信支付"
-	case "ALI_PAY":
-		text = "支付宝支付"
-	case "OFFLINE_PAY":
-		text = "线下支付"
-	case "YUE_PAY":
-		text = "余额支付"
-	}
+// 创建订单记录
+func (p *OrderStatusService) Store(changeType string, changeMessage string) (err error) {
+	err = db.Client.Create(&model.OrderStatus{
+		OrderId:       p.OrderId,
+		ChangeType:    changeType,
+		ChangeMessage: changeMessage,
+	}).Error
+	return
+}
 
-	return text
+// 变更为订单生成状态
+func (p *OrderStatusService) ChangeToCreateOrderStatus() (err error) {
+	return p.Store(p.CreateOrder.Type, p.CreateOrder.Message)
+}
+
+// 变更为用户付款成功状态
+func (p *OrderStatusService) ChangeToPaySuccessStatus() (err error) {
+	return p.Store(p.PaySuccess.Type, p.PaySuccess.Message)
+}
+
+// 变更为已发货状态
+func (p *OrderStatusService) ChangeToDeliveryGoodsStatus(company string, number string) (err error) {
+	message := strings.ReplaceAll(p.DeliveryGoods.Message, "{company}", company)
+	message = strings.ReplaceAll(message, "{number}", number)
+	return p.Store(p.DeliveryGoods.Type, message)
+}
+
+// 变更为已收货状态
+func (p *OrderStatusService) ChangeToTakeDeliveryStatus() (err error) {
+	return p.Store(p.TakeDelivery.Type, p.TakeDelivery.Message)
+}
+
+// 变更为用户已评价，订单已完成状态
+func (p *OrderStatusService) ChangeToCheckOrderOverStatus() (err error) {
+	return p.Store(p.CheckOrderOver.Type, p.CheckOrderOver.Message)
+}
+
+// 变更为申请退款状态
+func (p *OrderStatusService) ChangeToApplyRefundStatus(reason string) (err error) {
+	message := strings.ReplaceAll(p.ApplyRefund.Message, "{reason}", reason)
+	return p.Store(p.ApplyRefund.Type, message)
+}
+
+// 变更为给用户退款状态
+func (p *OrderStatusService) ChangeToRefundPriceStatus(price float64) (err error) {
+	message := strings.ReplaceAll(p.RefundPrice.Message, "{price}", strconv.FormatFloat(price, 'f', 2, 64))
+	return p.Store(p.RefundPrice.Type, message)
 }

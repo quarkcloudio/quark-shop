@@ -14,3 +14,11 @@ type SubmitOrderReq struct {
 	UserAddress  string        `json:"user_address"`
 	OrderDetails []OrderDetail `json:"order_details"`
 }
+
+// 申请退款
+type ApplyRefundReq struct {
+	OrderId             int    `json:"order_id"`
+	RefundReasonImg     string `json:"refund_reason_img"`     // 退款图片
+	RefundReasonExplain string `json:"refund_reason_explain"` // 退款申请说明：衣服开线了...
+	RefundReason        string `json:"refund_reason"`         // 退款原因：不想要了
+}

@@ -125,7 +125,7 @@ func (p *OrderDetailAction) Data(ctx *quark.Context) map[string]interface{} {
 	id, _ := strconv.Atoi(ctx.Query("id").(string))
 	order, _ := service.NewOrderService().GetOrderById(id)
 	user, _ := service.NewUserService().GetInfoById(order.Uid)
-	statuses, _ := service.NewOrderService().GetStatuses(id)
+	statuses, _ := service.NewOrderStatusService(id).GetList()
 	return map[string]interface{}{
 		"baseInfo":   order,
 		"userInfo":   user,

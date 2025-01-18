@@ -84,7 +84,7 @@ func (p *OrderRefundAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	if err := ctx.Bind(&refundReq); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-	if err := service.NewOrderService().Refund(refundReq.Id, refundReq.RefundPrice); err != nil {
+	if err := service.NewOrderService().AgreeRefund(refundReq.Id, refundReq.RefundPrice); err != nil {
 		return ctx.JSON(200, message.Error("操作失败"))
 	}
 	return ctx.JSON(200, message.Success("操作成功"))

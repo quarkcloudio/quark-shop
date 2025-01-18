@@ -66,6 +66,13 @@ func (p *OrderService) GetStatusText(order model.Order) string {
 	return statusText
 }
 
+// 变更订单状态
+// -1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成 或者 -1:申请退款;-2:退款成功;0:待核销;1:待核销;2:已核销;3:已完成
+func (p *OrderService) ChangeStatus(orderId int, status int) (err error) {
+	err = db.Client.Model(&model.Order{}).Where("id = ?", orderId).Update("status", status).Error
+	return
+}
+
 // 获取退款状态文本
 func (p *OrderService) GetRefundStatusText(order model.Order) string {
 	statusText := ""
@@ -188,12 +195,6 @@ func (p *OrderService) GetUserNumByStatus(uid interface{}, status string) (num i
 		return 0, errors.New("参数错误")
 	}
 	return p.GetNum(uid, status), nil
-}
-
-// 获取订单记录
-func (p *OrderService) GetStatuses(orderId interface{}) (statuses []model.OrderStatus, err error) {
-	err = db.Client.Where("order_id = ?", orderId).Find(&statuses).Error
-	return
 }
 
 // 获取订单信息
@@ -578,8 +579,13 @@ func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (err error)
 	return p.Delete(uid, id)
 }
 
-// 订单退款
-func (p *OrderService) Refund(orderId interface{}, refundPrice float64) (err error) {
+// 同意退款
+func (p *OrderService) AgreeRefund(orderId interface{}, refundPrice float64) (err error) {
+	return
+}
+
+// 申请退款
+func (p *OrderService) ApplyRefund(uid interface{}, applyRefundReq request.ApplyRefundReq) (err error) {
 	return
 }
 
@@ -596,6 +602,15 @@ func (p *OrderService) Verify(orderId interface{}, verifyCode interface{}) (err 
 
 		}
 	}
+
+	// 已核销，变更订单状态
+	err = p.ChangeStatus(orderId.(int), 2)
+	if err != nil {
+		return
+	}
+
+	// 已核销，即已收货，插入订单记录表
+	err = NewOrderStatusService(orderId.(int)).ChangeToTakeDeliveryStatus()
 	return
 }
 
