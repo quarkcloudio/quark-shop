@@ -35,7 +35,7 @@ func (p *RefundOrder) Init(ctx *quark.Context) interface{} {
 // 查询类型
 func (p *RefundOrder) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 	activeKey := ctx.QueryParam("activeKey")
-	query.Where("status < ?", 0)
+	query.Where("refund_status > ?", 0)
 	switch activeKey {
 	case "all":
 		// 全部
@@ -45,6 +45,9 @@ func (p *RefundOrder) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 	case "2":
 		// 已退款
 		query.Where("refund_status = ?", 2)
+	case "3":
+		// 拒绝退款
+		query.Where("refund_status = ?", 3)
 	}
 	return query
 }
@@ -66,6 +69,10 @@ func (p *RefundOrder) Menus(ctx *quark.Context) interface{} {
 				"key":   "2",
 				"label": "已退款",
 			},
+			{
+				"key":   "3",
+				"label": "拒绝退款",
+			},
 		},
 	}
 }
@@ -76,9 +83,7 @@ func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
-		field.Text("refund_no", "退款单号"),
-
-		field.Text("order_no", "原订单号"),
+		field.Text("order_no", "订单号"),
 
 		field.Text("name", "商品信息", func(row map[string]interface{}) interface{} {
 			result := ""
@@ -110,7 +115,7 @@ func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
 
 		field.Text("total_pay", "支付金额"),
 
-		field.Text("refund_reason_time", "发起退款时间"),
+		field.Text("refund_time", "发起退款时间"),
 
 		// 0:未退款,1:申请中,2:已退款
 		field.Text("refund_status", "退款状态", func(row map[string]interface{}) interface{} {
@@ -122,6 +127,8 @@ func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
 				result = "申请中"
 			case 2:
 				result = "已退款"
+			case 3:
+				result = "拒绝退款"
 			}
 			return result
 		}),
@@ -132,10 +139,6 @@ func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
 			}
 			result := ""
 			switch row["status"] {
-			case -2:
-				result = "退款成功"
-			case -1:
-				result = "申请退款"
 			case 0:
 				result = "待发货"
 			case 1:
