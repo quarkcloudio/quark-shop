@@ -54,9 +54,7 @@ func (p *OrderRefuseRefundAction) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 		field.Display("订单号", "${order_no}"),
-		field.TextArea("refuse_reason", "不退款原因").
-			SetRequired().
-			SetPlaceholder("请输入不退款原因"),
+		field.TextArea("refuse_reason", "不退款原因").SetRequired(),
 	}
 }
 
