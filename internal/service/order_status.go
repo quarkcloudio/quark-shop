@@ -14,14 +14,15 @@ type ChangeTypeItem = struct {
 }
 
 type OrderStatusService struct {
-	OrderId        int
-	CreateOrder    ChangeTypeItem
-	PaySuccess     ChangeTypeItem
-	DeliveryGoods  ChangeTypeItem
-	TakeDelivery   ChangeTypeItem
-	CheckOrderOver ChangeTypeItem
-	ApplyRefund    ChangeTypeItem
-	RefundPrice    ChangeTypeItem
+	OrderId           int
+	CreateOrder       ChangeTypeItem
+	PaySuccess        ChangeTypeItem
+	DeliveryGoods     ChangeTypeItem
+	TakeDelivery      ChangeTypeItem
+	CheckOrderOver    ChangeTypeItem
+	ApplyRefund       ChangeTypeItem
+	RefundPrice       ChangeTypeItem
+	CancelRefundOrder ChangeTypeItem
 }
 
 // 操作类型
@@ -31,7 +32,8 @@ type OrderStatusService struct {
 // take_delivery:已收货;
 // check_order_over:用户评价;
 // apply_refund:用户申请退款，原因：收货地址填错了;
-// refund_price:退款给用户：124.63元
+// refund_price:退款给用户：124.63元;
+// cancel_refund_order:不退款原因:不符合退款要求
 func NewOrderStatusService(orderId int) *OrderStatusService {
 	service := &OrderStatusService{
 		orderId,
@@ -42,6 +44,7 @@ func NewOrderStatusService(orderId int) *OrderStatusService {
 		ChangeTypeItem{"check_order_over", "用户评价"},
 		ChangeTypeItem{"apply_refund", "用户申请退款，原因：{reason}"},
 		ChangeTypeItem{"refund_price", "退款给用户：{price}元"},
+		ChangeTypeItem{"cancel_refund_order", "不退款原因：{reason}"},
 	}
 	return service
 }
@@ -99,4 +102,10 @@ func (p *OrderStatusService) ChangeToApplyRefundStatus(reason string) (err error
 func (p *OrderStatusService) ChangeToRefundPriceStatus(price float64) (err error) {
 	message := strings.ReplaceAll(p.RefundPrice.Message, "{price}", strconv.FormatFloat(price, 'f', 2, 64))
 	return p.Store(p.RefundPrice.Type, message)
+}
+
+// 变更为不退款状态
+func (p *OrderStatusService) ChangeToCancelRefundOrderStatus(reason string) (err error) {
+	message := strings.ReplaceAll(p.CancelRefundOrder.Message, "{reason}", reason)
+	return p.Store(p.CancelRefundOrder.Type, message)
 }

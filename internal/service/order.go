@@ -1,10 +1,12 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 	"strconv"
 
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"github.com/quarkcloudio/quark-go/v3/utils/rand"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
@@ -27,13 +29,9 @@ func (p *OrderService) GetStatusText(order model.Order) string {
 		return "待支付"
 	}
 
-	// -1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成
+	// 0:待发货;1:待收货;2:已收货,待评价;3:已完成
 	if order.ShippingType == 1 {
 		switch order.Status {
-		case -2:
-			statusText = "退款成功"
-		case -1:
-			statusText = "申请退款"
 		case 0:
 			statusText = "待发货"
 		case 1:
@@ -45,13 +43,9 @@ func (p *OrderService) GetStatusText(order model.Order) string {
 		}
 	}
 
-	// -1:申请退款;-2:退款成功;0:待核销;1:待核销;2:已核销;3:已完成
+	// 0:待核销;1:待核销;2:已核销;3:已完成
 	if order.ShippingType == 2 {
 		switch order.Status {
-		case -2:
-			statusText = "退款成功"
-		case -1:
-			statusText = "申请退款"
 		case 0:
 			statusText = "待核销"
 		case 1:
@@ -67,7 +61,7 @@ func (p *OrderService) GetStatusText(order model.Order) string {
 }
 
 // 变更订单状态
-// -1:申请退款;-2:退款成功;0:待发货;1:待收货;2:已收货,待评价;3:已完成 或者 -1:申请退款;-2:退款成功;0:待核销;1:待核销;2:已核销;3:已完成
+// 0:待发货;1:待收货;2:已收货,待评价;3:已完成 或者 0:待核销;1:待核销;2:已核销;3:已完成
 func (p *OrderService) ChangeStatus(orderId int, status int) (err error) {
 	err = db.Client.Model(&model.Order{}).Where("id = ?", orderId).Update("status", status).Error
 	return
@@ -152,10 +146,10 @@ func (p *OrderService) GetNum(uid interface{}, status string) int64 {
 		query.Where("paid", 1).Where("status = ?", 3)
 	case "refund":
 		// 退款申请中
-		query.Where("paid", 1).Where("status = ?", -1)
+		query.Where("paid", 1).Where("refund_status = ?", 1)
 	case "refunded":
 		// 已退款
-		query.Where("paid", 1).Where("status = ?", -2)
+		query.Where("paid", 1).Where("refund_status = ?", 2)
 	case "deleted":
 		// 已删除
 		query.Unscoped().Where("deleted_at IS NOT NULL")
@@ -213,39 +207,48 @@ func (p *OrderService) GetOrder(uid, orderId interface{}) (orderDto dto.OrderDTO
 		return
 	}
 	orderDto = dto.OrderDTO{
-		Id:                    order.Id,
-		OrderNo:               order.OrderNo,
-		Uid:                   order.Uid,
-		Realname:              order.Realname,
-		UserPhone:             order.UserPhone,
-		UserAddress:           order.UserAddress,
-		TotalNum:              order.TotalNum,
-		TotalPrice:            order.TotalPrice,
-		PayPrice:              order.PayPrice,
-		Paid:                  order.Paid,
-		PayTime:               order.PayTime,
-		PayType:               order.PayType,
-		PayTypeText:           p.GetPayTypeText(order.PayType),
-		OrderDetails:          orderDetails,
-		Status:                order.Status,
-		StatusText:            p.GetStatusText(order),
-		RefundStatus:          order.RefundStatus,
-		RefundStatusText:      p.GetRefundStatusText(order),
-		RefundReasonImg:       order.RefundReasonImg,
-		RefundReasonExplain:   order.RefundReasonExplain,
-		RefundReason:          order.RefundReason,
-		RefundRejectionReason: order.RefundRejectionReason,
-		RefundReasonTime:      order.RefundReasonTime,
-		RefundPrice:           order.RefundPrice,
-		Remark:                order.Remark,
-		MerchantId:            order.MerchantId,
-		IsMerchantCheck:       order.IsMerchantCheck,
-		Cost:                  order.Cost,
-		VerifyCode:            order.VerifyCode,
-		ShippingType:          order.ShippingType,
-		ClerkId:               order.Id,
-		CreatedAt:             order.CreatedAt,
-		UpdatedAt:             order.UpdatedAt,
+		Id:               order.Id,
+		OrderNo:          order.OrderNo,
+		Uid:              order.Uid,
+		Realname:         order.Realname,
+		UserPhone:        order.UserPhone,
+		UserAddress:      order.UserAddress,
+		TotalNum:         order.TotalNum,
+		TotalPrice:       order.TotalPrice,
+		PayPrice:         order.PayPrice,
+		Paid:             order.Paid == 1,
+		PayTime:          order.PayTime,
+		PayType:          order.PayType,
+		PayTypeText:      p.GetPayTypeText(order.PayType),
+		OrderDetails:     orderDetails,
+		Status:           order.Status,
+		StatusText:       p.GetStatusText(order),
+		RefundStatus:     order.RefundStatus,
+		RefundStatusText: p.GetRefundStatusText(order),
+		RefundImg:        order.RefundImg,
+		RefundExplain:    order.RefundExplain,
+		RefuseReason:     order.RefuseReason,
+		RefundTime:       order.RefundTime,
+		RefundPrice:      order.RefundPrice,
+		RefundExpress:    order.RefundExpress,
+		RefundExpressNo:  order.RefundExpressNo,
+		RefundNum:        order.RefundNum,
+		RefundPhone:      order.RefundPhone,
+		RefundType:       order.RefundType,
+		RefundedPrice:    order.RefundedPrice,
+		RefundedTime:     order.RefundedTime,
+		Remark:           order.Remark,
+		MerchantId:       order.MerchantId,
+		IsMerchantCheck:  order.IsMerchantCheck == 1,
+		Cost:             order.Cost,
+		VerifyCode:       order.VerifyCode,
+		ShippingType:     order.ShippingType,
+		ClerkId:          order.Id,
+		IsCancel:         order.IsCancel == 1,
+		IsAllRefund:      order.IsAllRefund == 1,
+		IsSystemDel:      order.IsSystemDel == 1,
+		CreatedAt:        order.CreatedAt,
+		UpdatedAt:        order.UpdatedAt,
 	}
 	return
 }
@@ -501,12 +504,12 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (err error) {
 	}
 
 	// 后台可删除未付款订单
-	if uid == nil && order.Paid == 1 {
+	if uid == nil && order.Paid {
 		return errors.New("已付款订单无法删除")
 	}
 
 	// 用户可删除未付款、已完成订单
-	if order.Paid == 1 && order.Status != 3 {
+	if order.Paid && order.Status != 3 {
 		return errors.New("已付款未完成订单无法删除")
 	}
 
@@ -528,7 +531,7 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (err error) {
 	}
 
 	// 删除未付款订单，将归还库存
-	if order.Paid == 0 {
+	if !order.Paid {
 		for _, orderDetail := range order.OrderDetails {
 			item, err := NewItemService().GetItem(orderDetail.ItemId, nil, false)
 			if err != nil {
@@ -579,13 +582,83 @@ func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (err error)
 	return p.Delete(uid, id)
 }
 
-// 同意退款
-func (p *OrderService) AgreeRefund(orderId interface{}, refundPrice float64) (err error) {
+// 申请退款
+func (p *OrderService) ApplyRefund(uid interface{}, applyRefundReq request.ApplyRefundReq) (err error) {
+	order, err := p.GetUserOrder(uid, applyRefundReq.OrderId)
+	if err != nil {
+		return
+	}
+	if !order.Paid {
+		return errors.New("未支付订单不可退款")
+	}
+	if order.IsAllRefund {
+		return errors.New("不可重复退款")
+	}
+	if applyRefundReq.RefundPrice > (order.PayPrice - order.RefundedPrice) {
+		return errors.New("退款金额不可大于可退款金额")
+	}
+
+	refundImg := ""
+	if applyRefundReq.RefundImg != nil {
+		jsonData, err := json.Marshal(applyRefundReq.RefundImg)
+		if err == nil {
+			refundImg = string(jsonData)
+		}
+	}
+
+	err = db.Client.Model(&model.Order{}).Where("id = ?", applyRefundReq.OrderId).Updates(&model.Order{
+		RefundStatus:  1,
+		RefundPrice:   applyRefundReq.RefundPrice,
+		RefundImg:     refundImg,
+		RefundExplain: applyRefundReq.RefundExplain,
+		RefundReason:  applyRefundReq.RefundReason,
+		RefundTime:    datetime.Now(),
+	}).Error
+	if err != nil {
+		return
+	}
+	err = NewOrderStatusService(applyRefundReq.OrderId).ChangeToApplyRefundStatus(applyRefundReq.RefundReason)
 	return
 }
 
-// 申请退款
-func (p *OrderService) ApplyRefund(uid interface{}, applyRefundReq request.ApplyRefundReq) (err error) {
+// 同意退款
+func (p *OrderService) AgreeRefund(orderId interface{}, refundPrice float64) (err error) {
+	order, err := p.GetOrderById(orderId)
+	if err != nil {
+		return
+	}
+	if !order.Paid {
+		return errors.New("未支付订单不可退款")
+	}
+	if order.IsAllRefund {
+		return errors.New("不可重复退款")
+	}
+	if refundPrice > (order.PayPrice - order.RefundedPrice) {
+		return errors.New("退款金额不可大于可退款金额")
+	}
+	err = db.Client.Model(&model.Order{}).Where("id = ?", orderId).Updates(&model.Order{
+		RefundStatus:  2,
+		RefundedPrice: order.RefundedPrice + refundPrice,
+		RefundedTime:  datetime.Now(),
+	}).Error
+	if err != nil {
+		return
+	}
+	err = NewOrderStatusService(orderId.(int)).ChangeToRefundPriceStatus(refundPrice)
+	return
+}
+
+// 拒绝退款
+func (p *OrderService) RefuseRefund(orderId interface{}, refuseReason string) (err error) {
+	err = db.Client.Model(&model.Order{}).Where("id = ?", orderId).Updates(&model.Order{
+		RefundStatus: 3,
+		RefuseReason: refuseReason,
+	}).Error
+	if err != nil {
+		return
+	}
+	// 插入订单记录表
+	err = NewOrderStatusService(orderId.(int)).ChangeToCancelRefundOrderStatus(refuseReason)
 	return
 }
 
