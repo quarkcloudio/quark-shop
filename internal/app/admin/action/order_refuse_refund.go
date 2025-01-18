@@ -1,8 +1,6 @@
 package action
 
 import (
-	"strconv"
-
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
@@ -56,35 +54,22 @@ func (p *OrderRefuseRefundAction) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 		field.Display("订单号", "${order_no}"),
-		field.Display("退款信息", "付款金额(${pay_price})  已退金额(${has_refund_price})  剩余可退(${can_refund_price})"),
-		field.Number("refund_price", "退款金额").
+		field.TextArea("refuse_reason", "不退款原因").
 			SetRequired().
-			SetPlaceholder("请输入退款金额"),
-	}
-}
-
-// 表单数据（异步获取）
-func (p *OrderRefuseRefundAction) Data(ctx *quark.Context) map[string]interface{} {
-	id, _ := strconv.Atoi(ctx.Query("id").(string))
-	order, _ := service.NewOrderService().GetOrderById(id)
-	return map[string]interface{}{
-		"id":               id,
-		"pay_price":        order.PayPrice,
-		"has_refund_price": order.RefundPrice,
-		"can_refund_price": order.PayPrice - order.RefundPrice,
+			SetPlaceholder("请输入不退款原因"),
 	}
 }
 
 // 执行行为句柄
 func (p *OrderRefuseRefundAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	var refundReq struct {
-		Id          int     `json:"id"`
-		RefundPrice float64 `json:"refund_price"`
+		Id           int    `json:"id"`
+		RefuseReason string `json:"refuse_reason"`
 	}
 	if err := ctx.Bind(&refundReq); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-	if err := service.NewOrderService().AgreeRefund(refundReq.Id, refundReq.RefundPrice); err != nil {
+	if err := service.NewOrderService().RefuseRefund(refundReq.Id, refundReq.RefuseReason); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	return ctx.JSON(200, message.Success("操作成功"))
