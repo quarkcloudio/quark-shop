@@ -157,12 +157,6 @@ func (p *OrderService) GetNum(uid interface{}, status string) int64 {
 	return num
 }
 
-// 获取订单记录
-func (p *OrderService) GetStatuses(orderId interface{}) (statuses []model.OrderStatus, err error) {
-	err = db.Client.Where("order_id = ?", orderId).Find(&statuses).Error
-	return
-}
-
 // 根据订单状态获取订单数量
 // all:全部
 // pendingPayment:待支付
@@ -178,7 +172,7 @@ func (p *OrderService) GetNumByStatus(status string) int64 {
 	return p.GetNum(nil, status)
 }
 
-// 根据用户ID、订单状态获取订单数量
+// 获取用户订单数量
 // all:全部
 // pendingPayment:待支付
 // pendingShipment:待发货（预留）
@@ -189,11 +183,17 @@ func (p *OrderService) GetNumByStatus(status string) int64 {
 // refund:退款申请中
 // refunded:已退款
 // deleted:已删除
-func (p *OrderService) GetNumByUidAndStatus(uid interface{}, status string) (num int64, err error) {
+func (p *OrderService) GetUserNumByStatus(uid interface{}, status string) (num int64, err error) {
 	if uid == nil {
 		return 0, errors.New("参数错误")
 	}
 	return p.GetNum(uid, status), nil
+}
+
+// 获取订单记录
+func (p *OrderService) GetStatuses(orderId interface{}) (statuses []model.OrderStatus, err error) {
+	err = db.Client.Where("order_id = ?", orderId).Find(&statuses).Error
+	return
 }
 
 // 获取订单信息
