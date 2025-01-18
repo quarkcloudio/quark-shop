@@ -11,20 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrderRefundAction struct {
+type OrderAgreeRefundAction struct {
 	actions.ModalForm
 }
 
 // 订单退款
-func OrderRefund() *OrderRefundAction {
-	return &OrderRefundAction{}
+func OrderAgreeRefund() *OrderAgreeRefundAction {
+	return &OrderAgreeRefundAction{}
 }
 
 // 初始化
-func (p *OrderRefundAction) Init(ctx *quark.Context) interface{} {
+func (p *OrderAgreeRefundAction) Init(ctx *quark.Context) interface{} {
 
 	// 设置按钮文字
-	p.Name = "<%= ((paid===1 && status<3) && '立即退款') %>"
+	p.Name = "<%= ((paid===1 && refund_status<=1) && '立即退款') %>"
 
 	// 类型
 	p.Type = "link"
@@ -51,7 +51,7 @@ func (p *OrderRefundAction) Init(ctx *quark.Context) interface{} {
 }
 
 // 字段
-func (p *OrderRefundAction) Fields(ctx *quark.Context) []interface{} {
+func (p *OrderAgreeRefundAction) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 	return []interface{}{
 		field.Hidden("id", "ID"),
@@ -64,7 +64,7 @@ func (p *OrderRefundAction) Fields(ctx *quark.Context) []interface{} {
 }
 
 // 表单数据（异步获取）
-func (p *OrderRefundAction) Data(ctx *quark.Context) map[string]interface{} {
+func (p *OrderAgreeRefundAction) Data(ctx *quark.Context) map[string]interface{} {
 	id, _ := strconv.Atoi(ctx.Query("id").(string))
 	order, _ := service.NewOrderService().GetOrderById(id)
 	return map[string]interface{}{
@@ -76,7 +76,7 @@ func (p *OrderRefundAction) Data(ctx *quark.Context) map[string]interface{} {
 }
 
 // 执行行为句柄
-func (p *OrderRefundAction) Handle(ctx *quark.Context, query *gorm.DB) error {
+func (p *OrderAgreeRefundAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	var refundReq struct {
 		Id          int     `json:"id"`
 		RefundPrice float64 `json:"refund_price"`
@@ -85,7 +85,7 @@ func (p *OrderRefundAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	if err := service.NewOrderService().AgreeRefund(refundReq.Id, refundReq.RefundPrice); err != nil {
-		return ctx.JSON(200, message.Error("操作失败"))
+		return ctx.JSON(200, message.Error(err.Error()))
 	}
 	return ctx.JSON(200, message.Success("操作成功"))
 }

@@ -197,7 +197,7 @@ func (p *Order) Actions(ctx *quark.Context) []interface{} {
 		action.OrderBatchVerify(),
 		actions.More("更多", []interface{}{
 			action.OrderDelete(),
-			action.OrderRefund(),
+			action.OrderAgreeRefund(),
 			action.OrderVerify(),
 			action.OrderDetail(),
 		}),

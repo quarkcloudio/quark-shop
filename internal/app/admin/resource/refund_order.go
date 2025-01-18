@@ -164,7 +164,8 @@ func (p *RefundOrder) Searches(ctx *quark.Context) []interface{} {
 // 行为
 func (p *RefundOrder) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		action.OrderRefund(),
+		action.OrderAgreeRefund(),
+		action.OrderRefuseRefund(),
 		action.OrderDetail(),
 	}
 }
