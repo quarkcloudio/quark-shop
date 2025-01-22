@@ -7,6 +7,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto/response"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
@@ -350,4 +351,27 @@ func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategoryResp {
 		Order("sort, id").
 		Find(&itemCategories)
 	return itemCategories
+}
+
+// 获取商品列表
+func (p *ItemService) GetItemPage(param request.ItemIndexQueryReq) ([]model.Item, int) {
+	var count int64
+	items := make([]model.Item, 0)
+
+	query := db.Client.Model(model.Item{}).
+		Select("id", "name", "image", "price", "ficti_sales").
+		Where("status = ?", 1).
+		Where("FIND_IN_SET(?, REPLACE(REPLACE(category_ids, '[', ''), ']', ''))", param.CategoryId)
+
+	if param.ItemNameKeyword != "" {
+		query.Where("name LIKE ?", "%"+param.ItemNameKeyword+"%")
+	}
+
+	query.Order(param.OrderRule + ", id ASC").
+		Count(&count).
+		Offset((param.Page - 1) * param.PageSize).
+		Limit(param.PageSize).
+		Find(&items)
+
+	return items, int(count)
 }
