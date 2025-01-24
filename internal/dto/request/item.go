@@ -9,3 +9,8 @@ type ItemIndexQueryReq struct {
 	IsDesc          bool   `query:"is_desc"`                        // 是否倒序：默认false
 	OrderRule       string
 }
+
+// 商品详情查询
+type ItemDetailQueryReq struct {
+	Id int `query:"id"`
+}

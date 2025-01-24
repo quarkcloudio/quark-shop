@@ -11,6 +11,7 @@ type ItemDTO struct {
 	CategoryIds string         `json:"category_ids"` // 分类ids
 	Price       float64        `json:"price"`        // 商品价格
 	OtPrice     float64        `json:"ot_price"`     // 市场价
+	Content     string         `json:"content"`      // 商品详情
 	Sort        int16          `json:"sort"`         // 排序
 	Sales       int            `json:"sales"`        // 销量
 	Stock       int            `json:"stock"`        // 库存
@@ -43,8 +44,8 @@ type AttrValueDTO struct {
 	Stock     int         `json:"stock"`      // 属性对应的库存
 	Sales     int         `json:"sales"`      // 销量，默认为0
 	Price     float64     `json:"price"`      // 属性金额
-	Image     interface{} `json:"image"`      // 图片
-	ImageJson interface{} `json:"-"`          // 图片，Json字符串
+	Image     string      `json:"image"`      // 图片
+	ImageJson string      `json:"-"`          // 图片，Json字符串
 	Cost      float64     `json:"cost"`       // 成本价，默认为0.00
 	OtPrice   float64     `json:"ot_price"`   // 原价，默认为0.00
 	AttrValue interface{} `json:"attr_value"` // attr_values 创建更新时的属性对应

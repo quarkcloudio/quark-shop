@@ -18,9 +18,13 @@ func GetFilePath(id interface{}) string {
 // 获取多文件路径
 func GetFilePaths(id interface{}) []string {
 	if id == nil {
-		return nil
+		return make([]string, 0)
 	}
-	return service.NewAttachmentService().GetPaths(id)
+	paths := service.NewAttachmentService().GetPaths(id)
+	if paths == nil || len(paths) == 0 {
+		return make([]string, 0)
+	}
+	return paths
 }
 
 // 获取图片路径

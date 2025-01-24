@@ -231,7 +231,7 @@ func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (
 }
 
 // 根据id获取商品
-func (p *ItemService) GetItemById(itemId int, status int) (data dto.ItemDTO, err error) {
+func (p *ItemService) GetItemById(itemId int) (data dto.ItemDTO, err error) {
 	return p.GetItem(itemId, 1, false)
 }
 
@@ -364,7 +364,7 @@ func (p *ItemService) GetItemPage(param request.ItemIndexQueryReq) ([]model.Item
 		Where("FIND_IN_SET(?, REPLACE(REPLACE(category_ids, '[', ''), ']', ''))", param.CategoryId)
 
 	if param.ItemNameKeyword != "" {
-		query.Where("name LIKE ?", "%"+param.ItemNameKeyword+"%")
+		query.Where("name LIKE ? OR keyword LIKE ?", "%"+param.ItemNameKeyword+"%", "%"+param.ItemNameKeyword+"%")
 	}
 
 	query.Order(param.OrderRule + ", id ASC").

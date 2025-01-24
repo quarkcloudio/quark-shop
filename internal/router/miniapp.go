@@ -22,6 +22,7 @@ func MiniAppRegister(b *quark.Engine) {
 	// 商品组
 	g.GET("/item/category", (&handler.Item{}).Category) // 商品分类
 	g.GET("/item/index", (&handler.Item{}).Index)       // 商品列表
+	g.GET("/item/detail", (&handler.Item{}).Detail)     // 商品详情
 
 	// 需要登录认证路由组
 	ag := b.Group("/api/miniapp", middleware.MiniAppMiddleware)
