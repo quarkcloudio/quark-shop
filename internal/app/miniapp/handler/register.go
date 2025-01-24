@@ -8,6 +8,6 @@ import (
 type Register struct{}
 
 // 用户注册
-func (p *Register) Index(ctx *quark.Context) error {
+func (p *Register) Register(ctx *quark.Context) error {
 	return ctx.JSONOk("Hello, world!")
 }

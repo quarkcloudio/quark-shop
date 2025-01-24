@@ -11,7 +11,7 @@ import (
 type Login struct{}
 
 // 用户名、密码登录
-func (p *Login) Index(ctx *quark.Context) error {
+func (p *Login) Login(ctx *quark.Context) error {
 	loginReq := &request.LoginReq{}
 	if err := ctx.Bind(loginReq); err != nil {
 		return ctx.JSONError(err.Error())
@@ -40,7 +40,7 @@ func (p *Login) Index(ctx *quark.Context) error {
 }
 
 // 模拟登录
-func (p *Login) Mock(ctx *quark.Context) error {
+func (p *Login) MockLogin(ctx *quark.Context) error {
 	token, err := service.NewAuthService(ctx).MockLogin()
 	if err != nil {
 		return ctx.JSONError(err.Error())
