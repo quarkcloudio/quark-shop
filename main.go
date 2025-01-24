@@ -5,17 +5,17 @@ import (
 	"log"
 	"os"
 
-	echomiddleware "github.com/labstack/echo/v4/middleware"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/quarkcloudio/quark-go/v3"
-	adminservice "github.com/quarkcloudio/quark-go/v3/app/admin"
-	miniappservice "github.com/quarkcloudio/quark-go/v3/app/miniapp"
-	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
+	adminCoreService "github.com/quarkcloudio/quark-go/v3/app/admin"
+	miniappCoreService "github.com/quarkcloudio/quark-go/v3/app/miniapp"
+	adminModule "github.com/quarkcloudio/quark-go/v3/template/admin"
 	"github.com/quarkcloudio/quark-go/v3/utils/file"
 	"github.com/quarkcloudio/quark-go/v3/utils/rand"
 	"github.com/quarkcloudio/quark-smart/v2/config"
 	"github.com/quarkcloudio/quark-smart/v2/database"
-	appadminservice "github.com/quarkcloudio/quark-smart/v2/internal/app/admin"
-	apptoolservice "github.com/quarkcloudio/quark-smart/v2/internal/app/tool"
+	adminEngineService "github.com/quarkcloudio/quark-smart/v2/internal/app/admin/engine"
+	toolEngineService "github.com/quarkcloudio/quark-smart/v2/internal/app/tool/engine"
 	"github.com/quarkcloudio/quark-smart/v2/internal/middleware"
 	"github.com/quarkcloudio/quark-smart/v2/internal/router"
 	"github.com/quarkcloudio/quark-smart/v2/internal/task"
@@ -66,21 +66,21 @@ func main() {
 	}
 
 	// 加载管理后台服务
-	providers = append(providers, adminservice.Providers...)
+	providers = append(providers, adminCoreService.Providers...)
 
 	// 加载MiniApp服务
-	providers = append(providers, miniappservice.Providers...)
+	providers = append(providers, miniappCoreService.Providers...)
 
 	// 加载自定义管理后台服务
-	providers = append(providers, appadminservice.Providers...)
+	providers = append(providers, adminEngineService.Providers...)
 
 	// 加载自定义高级功能服务
 	if appPro {
-		providers = append(providers, appadminservice.ProProviders...)
+		providers = append(providers, adminEngineService.ProProviders...)
 	}
 
 	// 加载自定义工具服务
-	providers = append(providers, apptoolservice.Providers...)
+	providers = append(providers, toolEngineService.Providers...)
 
 	// 配置资源
 	getConfig := &quark.Config{
@@ -110,7 +110,7 @@ func main() {
 	// 避免每次重启都构建数据库
 	if !file.IsExist("install.lock") {
 		// 构建Admin数据库
-		adminmodule.Install()
+		adminModule.Install()
 
 		// 构建本项目数据库
 		database.Handle()
@@ -122,7 +122,7 @@ func main() {
 	}
 
 	// 管理后台中间件
-	b.Use(adminmodule.Middleware)
+	b.Use(adminModule.Middleware)
 
 	// 本项目中间件
 	b.Use(middleware.AppMiddleware)
@@ -135,7 +135,7 @@ func main() {
 
 	// 日志中间件
 	if config.App.Logger {
-		b.Echo().Use(echomiddleware.Logger())
+		b.Echo().Use(echoMiddleware.Logger())
 	}
 
 	// 日志文件位置
@@ -148,7 +148,7 @@ func main() {
 
 	// 崩溃后自动恢复
 	if config.App.Recover {
-		b.Echo().Use(echomiddleware.Recover())
+		b.Echo().Use(echoMiddleware.Recover())
 	}
 
 	// 注册后台路由

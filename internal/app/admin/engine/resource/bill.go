@@ -8,7 +8,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/selectfield"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
-	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/action"
+	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/engine/action"
 	"gorm.io/gorm"
 )
 

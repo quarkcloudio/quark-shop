@@ -6,7 +6,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
-	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/action"
+	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/engine/action"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
