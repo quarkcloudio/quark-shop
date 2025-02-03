@@ -14,7 +14,7 @@ type Login struct{}
 func (p *Login) Login(ctx *quark.Context) error {
 	loginReq := &request.LoginReq{}
 	if err := ctx.Bind(loginReq); err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSONError("参数错误")
 	}
 	if loginReq.Captcha.Id == "" || loginReq.Captcha.Value == "" {
 		return ctx.JSONError("验证码不能为空")
