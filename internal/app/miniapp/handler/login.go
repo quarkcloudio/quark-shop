@@ -34,7 +34,7 @@ func (p *Login) Login(ctx *quark.Context) error {
 		return ctx.JSONError(err.Error())
 	}
 
-	return ctx.JSONOk("获取成功", map[string]interface{}{
+	return ctx.JSONOk("登录成功", map[string]interface{}{
 		"token": token,
 	})
 }
@@ -45,7 +45,7 @@ func (p *Login) MockLogin(ctx *quark.Context) error {
 	if err != nil {
 		return ctx.JSONError(err.Error())
 	}
-	return ctx.JSONOk("获取成功", map[string]interface{}{
+	return ctx.JSONOk("登录成功", map[string]interface{}{
 		"token": token,
 	})
 }
