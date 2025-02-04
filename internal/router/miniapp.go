@@ -29,6 +29,14 @@ func MiniAppRegister(b *quark.Engine) {
 	ag.GET("/user/index", (&handler.User{}).Index)
 	ag.POST("/user/save", (&handler.User{}).Save)
 	ag.POST("/user/delete", (&handler.User{}).Delete)
+	
+	ag.GET("/area/options", (&handler.Area{}).Options) // 地区选项/省市县三级联动
+
+	ag.GET("/userAddress/index", (&handler.UserAddress{}).Index) // 用户地址列表
+	ag.GET("/userAddress/detail", (&handler.UserAddress{}).Detail) // 用户地址详情
+	ag.POST("/userAddress/create", (&handler.UserAddress{}).Create) // 创建用户地址
+	ag.POST("/userAddress/update", (&handler.UserAddress{}).Update) // 更新用户地址
+	ag.POST("/userAddress/delete", (&handler.UserAddress{}).Delete) // 删除用户地址
 
 	// 订单路由组
 	ag.GET("/order/index", (&handler.Order{}).Index)
