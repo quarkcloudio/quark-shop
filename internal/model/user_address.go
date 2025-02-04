@@ -15,7 +15,7 @@ type UserAddress struct {
 	City      int               `json:"city"`
 	District  int               `json:"district"`
 	Address   string            `json:"address"`
-	IsDefault int               `json:"is_default"`
+	IsDefault string            `json:"is_default"`
 	CreatedAt datetime.Datetime `json:"created_at"`
 	UpdatedAt datetime.Datetime `json:"updated_at"`
 	DeletedAt gorm.DeletedAt    `json:"deleted_at"`

@@ -36,3 +36,18 @@ func (p *UserAddressService) GetUserAddressById(id int) response.UserAddressDeta
 
 	return userAddress
 }
+
+// 新增用户地址
+func (p *UserAddressService) CreateUserAddress(userAddress model.UserAddress) error {
+	return db.Client.Model(&model.UserAddress{}).Create(&userAddress).Error
+}
+
+// 更新用户地址
+func (p *UserAddressService) UpdateUserAddressById(userAddress model.UserAddress) error {
+	return db.Client.Model(&model.UserAddress{}).Where("id = ?", userAddress.Id).Updates(&userAddress).Error
+}
+
+// 删除用户地址
+func (p *UserAddressService) DeleteUserAddressById(id int) error {
+	return db.Client.Model(&model.UserAddress{}).Where("id = ?", id).Delete(&model.UserAddress{}).Error
+}

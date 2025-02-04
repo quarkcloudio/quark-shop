@@ -6,7 +6,7 @@ type UserAddressIndexResp struct {
 	Name      string `json:"name"`
 	Phone     string `json:"phone"`
 	Address   string `json:"address"`
-	IsDefault int    `json:"is_default"`
+	IsDefault string `json:"is_default"`
 }
 
 // 用户地址详情
@@ -18,5 +18,5 @@ type UserAddressDetailResp struct {
 	City      int    `json:"city"`
 	District  int    `json:"district"`
 	Address   string `json:"address"`
-	IsDefault int    `json:"is_default"`
+	IsDefault string `json:"is_default"`
 }
