@@ -18,6 +18,7 @@ func (p *User) Index(ctx *quark.Context) error {
 	user, _ := service.NewUserService().GetInfoById(uid)
 	userInfo := response.UserInfoResp{
 		Id:       user.Id,
+		Username: user.Username,
 		Nickname: user.Nickname,
 		Phone:    user.Phone,
 		Avatar:   utils.GetImagePath(user.Avatar),
