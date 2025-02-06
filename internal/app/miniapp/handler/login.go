@@ -31,7 +31,7 @@ func (p *Login) Login(ctx *quark.Context) error {
 	}
 	token, err := service.NewAuthService(ctx).Login(loginReq.Username, loginReq.Password)
 	if err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSONError("用户名或密码错误")
 	}
 
 	return ctx.JSONOk("登录成功", map[string]interface{}{
