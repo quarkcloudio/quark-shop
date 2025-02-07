@@ -71,7 +71,7 @@ func (p *BillMarkAction) Fields(ctx *quark.Context) []interface{} {
 // 表单数据（异步获取）
 func (p *BillMarkAction) Data(ctx *quark.Context) map[string]interface{} {
 	id, _ := strconv.Atoi(ctx.Query("id").(string))
-	bill := service.NewBillService().GetInfoById(id)
+	bill := service.NewUserBillService().GetInfoById(id)
 	return map[string]interface{}{
 		"id":   id,
 		"mark": bill.Mark,
@@ -87,7 +87,7 @@ func (p *BillMarkAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	if err := ctx.Bind(&param); err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
-	if err := service.NewBillService().UpdateMarkById(param.Id, param.Mark); err != nil {
+	if err := service.NewUserBillService().UpdateMarkById(param.Id, param.Mark); err != nil {
 		return ctx.JSON(200, message.Error("操作失败"))
 	}
 	return ctx.JSON(200, message.Success("操作成功"))

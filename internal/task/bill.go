@@ -63,7 +63,7 @@ func (p *BillTask) MakeBill(period string) {
 	// 初始化（收入、支出、入账）金额
 	var entryPrice, expPrice, incomePrice float64
 
-	bills := service.NewBillService().GetListByPeriod(startDatetime, endDatetime)
+	bills := service.NewUserBillService().GetListByPeriod(startDatetime, endDatetime)
 	for _, bill := range bills {
 		// PM：0-支出；1-获得
 		switch bill.PM {

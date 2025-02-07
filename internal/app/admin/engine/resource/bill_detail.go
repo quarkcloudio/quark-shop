@@ -32,7 +32,7 @@ type BillDetailResource struct {
 }
 
 func (BillDetailResource) TableName() string {
-	return "bills"
+	return "user_bills"
 }
 
 // 初始化
@@ -60,20 +60,20 @@ func (p *BillDetail) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 	billRecord := service.NewBillRecordService().GetInfoById(billRecordId)
 
 	return query.Select(
-		"bills.id",
-		"bills.link_id",
-		"bills.bill_no",
-		"bills.type",
-		"bills.pm",
-		"bills.number",
-		"bills.mark",
-		"bills.created_at",
+		"user_bills.id",
+		"user_bills.link_id",
+		"user_bills.bill_no",
+		"user_bills.type",
+		"user_bills.pm",
+		"user_bills.number",
+		"user_bills.mark",
+		"user_bills.created_at",
 		"orders.order_no",
 		"orders.realname",
 		"orders.pay_type",
 	).
-		Joins("JOIN orders ON orders.id = bills.link_id").
-		Where("bills.created_at BETWEEN ? AND ?", billRecord.StartDatetime, billRecord.EndDatetime)
+		Joins("JOIN orders ON orders.id = user_bills.link_id").
+		Where("user_bills.created_at BETWEEN ? AND ?", billRecord.StartDatetime, billRecord.EndDatetime)
 }
 
 func (p *BillDetail) Fields(ctx *quark.Context) []interface{} {

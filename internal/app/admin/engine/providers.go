@@ -30,7 +30,7 @@ var ProProviders = []interface{}{
 	&resource.Order{},
 	&resource.RefundOrder{},
 	&resource.VerifyOrder{},
-	&resource.Bill{},
+	&resource.CapitalFlow{},
 	&resource.BillRecord{},
 	&resource.BillDetail{},
 }

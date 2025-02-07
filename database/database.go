@@ -36,12 +36,13 @@ func MiniAppHandle() {
 		&model.Order{},
 		&model.OrderDetail{},
 		&model.OrderStatus{},
-		&model.Bill{},
+		&model.UserBill{},
 		&model.BillRecord{},
+		&model.CapitalFlow{},
 	)
 
 	// 数据填充
 	(&model.Item{}).Seeder()
 	(&model.Order{}).Seeder()
-	(&model.Bill{}).Seeder()
+	(&model.CapitalFlow{}).Seeder()
 }
