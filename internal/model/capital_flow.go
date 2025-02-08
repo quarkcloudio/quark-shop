@@ -9,7 +9,7 @@ import (
 
 type CapitalFlow struct {
 	Id          int               `json:"id" gorm:"primaryKey;autoIncrement;column:id;comment:编号"`
-	FlowNo      string            `json:"flow_no" gorm:"column:flow_id;type:varchar(32);not null;default:'';comment:流水号"`
+	FlowNo      string            `json:"flow_no" gorm:"column:flow_no;type:varchar(32);not null;default:'';comment:流水号"`
 	OrderId     string            `json:"order_id" gorm:"column:order_id;type:varchar(50);not null;default:'';comment:关联id"`
 	Uid         int               `json:"uid" gorm:"column:uid;type:int(11);not null;default:0;comment:用户id"`
 	Nickname    string            `json:"nickname" gorm:"column:nickname;type:varchar(255);not null;default:'';comment:昵称"`
