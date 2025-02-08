@@ -15,6 +15,7 @@ func Handle() {
 		&model.Banner{},
 		&model.BannerCategory{},
 		&model.Navigation{},
+		&model.Agreement{},
 	)
 
 	// 数据填充
@@ -23,6 +24,7 @@ func Handle() {
 	(&model.Banner{}).Seeder()
 	(&model.BannerCategory{}).Seeder()
 	(&model.Navigation{}).Seeder()
+	(&model.Agreement{}).Seeder()
 }
 
 // 高级功能

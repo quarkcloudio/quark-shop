@@ -33,4 +33,5 @@ var ProProviders = []interface{}{
 	&resource.CapitalFlow{},
 	&resource.BillRecord{},
 	&resource.BillDetail{},
+	&resource.Agreement{},
 }
