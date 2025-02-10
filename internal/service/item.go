@@ -360,8 +360,8 @@ func (p *ItemService) GetItemPage(param request.ItemIndexQueryReq) ([]model.Item
 
 	query := db.Client.Model(model.Item{}).
 		Select("id", "name", "image", "price", "ficti_sales").
-		Where("status = ?", 1).
-		Where("FIND_IN_SET(?, REPLACE(REPLACE(category_ids, '[', ''), ']', ''))", param.CategoryId)
+		Where("status = ?", 1)
+		// Where("FIND_IN_SET(?, REPLACE(REPLACE(category_ids, '[', ''), ']', ''))", param.CategoryId)
 
 	if param.ItemNameKeyword != "" {
 		query.Where("name LIKE ? OR keyword LIKE ?", "%"+param.ItemNameKeyword+"%", "%"+param.ItemNameKeyword+"%")
