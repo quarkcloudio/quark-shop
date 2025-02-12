@@ -37,7 +37,7 @@ func (p *CategoryService) GetListWithRoot(categoryType string) (categories []mod
 func (p *CategoryService) DeleteItemCategoryByItemId(itemId interface{}) {
 	db.Client.
 		Where("item_id = ?", itemId).
-		Delete(&model.ItemCategory{})
+		Delete(&model.ItemCategoryRelation{})
 }
 
 // 创建商品类别
@@ -47,7 +47,7 @@ func (p *CategoryService) StoreItemCategory(itemId int, categoryIds interface{})
 		return
 	}
 	for _, item := range categoryIds.([]interface{}) {
-		db.Client.Create(&model.ItemCategory{
+		db.Client.Create(&model.ItemCategoryRelation{
 			ItemId:     itemId,
 			CategoryId: int(item.(float64)),
 		})

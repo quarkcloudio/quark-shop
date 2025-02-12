@@ -34,7 +34,7 @@ func MiniAppHandle() {
 		&model.Item{},
 		&model.ItemAttr{},
 		&model.ItemAttrValue{},
-		&model.ItemCategory{},
+		&model.ItemCategoryRelation{},
 		&model.Order{},
 		&model.OrderDetail{},
 		&model.OrderStatus{},
