@@ -10,7 +10,7 @@ type ItemCategoryResp struct {
 }
 
 // 商品列表
-type ItemIndexResp struct {
+type ItemListResp struct {
 	Id         int     `json:"id"`          // 商品id
 	Name       string  `json:"name"`        // 商品名称
 	Image      string  `json:"image"`       // 商品图片
@@ -19,7 +19,7 @@ type ItemIndexResp struct {
 }
 
 // 商品详情
-type ItemDetailResp struct {
+type ItemResp struct {
 	Id          int                 `json:"id"`           // 商品id
 	Name        string              `json:"name"`         // 商品名称
 	Price       float64             `json:"price"`        // 商品价格

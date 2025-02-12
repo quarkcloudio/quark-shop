@@ -1,7 +1,7 @@
 package request
 
 // 商品列表查询
-type ItemIndexQueryReq struct {
+type ItemListReq struct {
 	PageReq
 	CategoryId      int    `query:"category_id"`                    // 商品分类id：categoryies表中type为ITEM的分类
 	ItemNameKeyword string `query:"item_name_keyword"`              // 模糊搜索：支持商品名称和关键字
@@ -11,6 +11,6 @@ type ItemIndexQueryReq struct {
 }
 
 // 商品详情查询
-type ItemDetailQueryReq struct {
+type ItemReq struct {
 	Id int `query:"id"`
 }

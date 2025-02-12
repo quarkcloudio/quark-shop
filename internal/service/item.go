@@ -354,7 +354,7 @@ func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategoryResp {
 }
 
 // 获取商品列表
-func (p *ItemService) GetItemPage(param request.ItemIndexQueryReq) ([]model.Item, int) {
+func (p *ItemService) GetItemList(param request.ItemListReq) ([]model.Item, int) {
 	var count int64
 	items := make([]model.Item, 0)
 

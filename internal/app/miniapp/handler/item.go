@@ -13,7 +13,7 @@ type Item struct{}
 
 // 商品列表
 func (p *Item) Index(ctx *quark.Context) error {
-	var param request.ItemIndexQueryReq
+	var param request.ItemListReq
 	if err := ctx.Bind(&param); err != nil {
 		return ctx.JSONError(err.Error())
 	}
@@ -24,11 +24,11 @@ func (p *Item) Index(ctx *quark.Context) error {
 		param.OrderRule = param.OrderByColumn + " DESC"
 	}
 
-	list := make([]response.ItemIndexResp, 0)
+	list := make([]response.ItemListResp, 0)
 
-	items, total := service.NewItemService().GetItemPage(param)
+	items, total := service.NewItemService().GetItemList(param)
 	for _, item := range items {
-		list = append(list, response.ItemIndexResp{
+		list = append(list, response.ItemListResp{
 			Id:         item.Id,
 			Name:       item.Name,
 			Image:      utils.GetImagePath(item.Image),
@@ -45,7 +45,7 @@ func (p *Item) Index(ctx *quark.Context) error {
 
 // 商品详情
 func (p *Item) Detail(ctx *quark.Context) error {
-	var param request.ItemDetailQueryReq
+	var param request.ItemReq
 	if err := ctx.Bind(&param); err != nil {
 		return ctx.JSONError(err.Error())
 	}
@@ -57,7 +57,7 @@ func (p *Item) Detail(ctx *quark.Context) error {
 		return ctx.JSONError(err.Error())
 	}
 
-	data := response.ItemDetailResp{
+	data := response.ItemResp{
 		Id:          item.Id,
 		Name:        item.Name,
 		Price:       item.Price,
