@@ -5,7 +5,6 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
@@ -85,10 +84,10 @@ func (p *BillMarkAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 		Mark string `json:"mark"`
 	}
 	if err := ctx.Bind(&param); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError("参数错误")
 	}
 	if err := service.NewUserBillService().UpdateMarkById(param.Id, param.Mark); err != nil {
-		return ctx.JSON(200, message.Error("操作失败"))
+		return ctx.CJSONError("操作失败")
 	}
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

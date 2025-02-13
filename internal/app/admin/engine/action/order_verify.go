@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 	"gorm.io/gorm"
@@ -55,7 +54,7 @@ func (p *OrderVerifyAction) GetApiParams() []string {
 func (p *OrderVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	id := ctx.Query("id")
 	if id == "" {
-		return ctx.JSON(200, message.Error("参数错误！"))
+		return ctx.CJSONError("参数错误")
 	}
 
 	ids := strings.Split(id.(string), ",")
@@ -63,23 +62,23 @@ func (p *OrderVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 		for _, v := range ids {
 			idInt, err := strconv.Atoi(v)
 			if err != nil {
-				return ctx.JSON(200, message.Error(err.Error()))
+				return ctx.CJSONError(err.Error())
 			}
 			err = service.NewOrderService().VerifyBySystem(idInt)
 			if err != nil {
-				return ctx.JSON(200, message.Error(err.Error()))
+				return ctx.CJSONError(err.Error())
 			}
 		}
 	} else {
 		idInt, err := strconv.Atoi(id.(string))
 		if err != nil {
-			return ctx.JSON(200, message.Error(err.Error()))
+			return ctx.CJSONError(err.Error())
 		}
 		err = service.NewOrderService().VerifyBySystem(idInt)
 		if err != nil {
-			return ctx.JSON(200, message.Error(err.Error()))
+			return ctx.CJSONError(err.Error())
 		}
 	}
 
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

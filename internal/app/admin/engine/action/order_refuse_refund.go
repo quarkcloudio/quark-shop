@@ -2,7 +2,6 @@ package action
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
@@ -65,10 +64,10 @@ func (p *OrderRefuseRefundAction) Handle(ctx *quark.Context, query *gorm.DB) err
 		RefuseReason string `json:"refuse_reason"`
 	}
 	if err := ctx.Bind(&refundReq); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError("参数错误")
 	}
 	if err := service.NewOrderService().RefuseRefund(refundReq.Id, refundReq.RefuseReason); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }

@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
@@ -80,10 +79,10 @@ func (p *OrderAgreeRefundAction) Handle(ctx *quark.Context, query *gorm.DB) erro
 		RefundPrice float64 `json:"refund_price"`
 	}
 	if err := ctx.Bind(&refundReq); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError("参数错误")
 	}
 	if err := service.NewOrderService().AgreeRefund(refundReq.Id, refundReq.RefundPrice); err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
+		return ctx.CJSONError(err.Error())
 	}
-	return ctx.JSON(200, message.Success("操作成功"))
+	return ctx.CJSONOk("操作成功")
 }
