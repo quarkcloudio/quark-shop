@@ -354,23 +354,26 @@ func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategoryResp {
 }
 
 // 获取商品列表
-func (p *ItemService) GetItemList(param request.ItemListReq) ([]model.Item, int) {
+func (p *ItemService) GetItemList(itemListReq request.ItemListReq) ([]model.Item, int) {
 	var count int64
 	items := make([]model.Item, 0)
 
 	query := db.Client.Model(model.Item{}).
-		Select("id", "name", "image", "price", "ficti_sales").
-		Where("status = ?", 1)
-		// Where("FIND_IN_SET(?, REPLACE(REPLACE(category_ids, '[', ''), ']', ''))", param.CategoryId)
+		Select("items.id", "items.name", "items.image", "items.price", "items.ficti_sales").
+		Where("items.status = ?", 1)
 
-	if param.ItemNameKeyword != "" {
-		query.Where("name LIKE ? OR keyword LIKE ?", "%"+param.ItemNameKeyword+"%", "%"+param.ItemNameKeyword+"%")
+	if itemListReq.ItemNameKeyword != "" {
+		query.Where("items.name LIKE ? OR items.keyword LIKE ?", "%"+itemListReq.ItemNameKeyword+"%", "%"+itemListReq.ItemNameKeyword+"%")
 	}
 
-	query.Order(param.OrderRule + ", id ASC").
+	if itemListReq.CategoryId > 0 {
+		query.Joins("JOIN item_category_relations ON item_category_relations.item_id = items.id AND item_category_relations.category_id = ?", itemListReq.CategoryId)
+	}
+
+	query.Order(itemListReq.OrderRule + ", items.id ASC").
 		Count(&count).
-		Offset((param.Page - 1) * param.PageSize).
-		Limit(param.PageSize).
+		Offset((itemListReq.Page - 1) * itemListReq.PageSize).
+		Limit(itemListReq.PageSize).
 		Find(&items)
 
 	return items, int(count)
