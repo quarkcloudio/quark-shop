@@ -28,12 +28,10 @@ func (p *Item) Index(ctx *quark.Context) error {
 func (p *Item) Detail(ctx *quark.Context) error {
 	var param request.ItemReq
 	if err := ctx.Bind(&param); err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSONError("参数错误")
 	}
 
-	itemService := service.NewItemService()
-
-	item, err := itemService.GetItemById(param.Id)
+	item, err := service.NewItemService().GetItemById(param.Id)
 	if err != nil {
 		return ctx.JSONError(err.Error())
 	}
@@ -52,7 +50,6 @@ func (p *Item) Detail(ctx *quark.Context) error {
 	}
 
 	data.AttrValues = make([]response.ItemAttrValueResp, 0)
-
 	for _, value := range item.AttrValues {
 		data.AttrValues = append(data.AttrValues, response.ItemAttrValueResp{
 			AttrValueId:        value.Id,
