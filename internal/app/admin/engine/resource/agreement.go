@@ -75,11 +75,8 @@ func (p *Agreement) FormHandle(ctx *quark.Context, query *gorm.DB, data map[stri
 			result = false
 		}
 	}
-
 	if !result {
 		return ctx.CJSONError("操作失败，请重试")
 	}
-
-	// 返回成功
 	return ctx.CJSONOk("操作成功")
 }
