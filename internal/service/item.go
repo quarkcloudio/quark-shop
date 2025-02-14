@@ -356,7 +356,7 @@ func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategoryResp {
 // 获取商品列表
 func (p *ItemService) GetItemList(itemListReq request.ItemListReq) ([]model.Item, int) {
 	var count int64
-	items := make([]model.Item, 0)
+	items := []model.Item{}
 
 	query := db.Client.Model(model.Item{}).
 		Select("items.id", "items.name", "items.image", "items.price", "items.ficti_sales").
