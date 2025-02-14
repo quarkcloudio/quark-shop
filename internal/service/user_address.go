@@ -14,7 +14,7 @@ func NewUserAddressService() *UserAddressService {
 }
 
 // 获取用户地址列表
-func (p *UserAddressService) GetUserAddressesByUid(param request.UserAddressIndexReq) ([]model.UserAddress, int) {
+func (p *UserAddressService) GetUserAddressesByUid(param request.UserAddressIndexReq) ([]model.UserAddress, int64) {
 	userAddresses := make([]model.UserAddress, 0)
 	var count int64
 
@@ -25,7 +25,7 @@ func (p *UserAddressService) GetUserAddressesByUid(param request.UserAddressInde
 		Limit(param.PageSize).
 		Find(&userAddresses)
 
-	return userAddresses, int(count)
+	return userAddresses, count
 }
 
 // 获取用户地址详情

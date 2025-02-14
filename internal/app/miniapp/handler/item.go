@@ -15,28 +15,9 @@ type Item struct{}
 func (p *Item) Index(ctx *quark.Context) error {
 	var param request.ItemListReq
 	if err := ctx.Bind(&param); err != nil {
-		return ctx.JSONError(err.Error())
+		return ctx.JSONError("参数错误")
 	}
-
-	// 构建排序规则
-	param.OrderRule = param.OrderByColumn + " ASC"
-	if param.IsDesc {
-		param.OrderRule = param.OrderByColumn + " DESC"
-	}
-
-	list := make([]response.ItemListResp, 0)
-
-	items, total := service.NewItemService().GetItemList(param)
-	for _, item := range items {
-		list = append(list, response.ItemListResp{
-			Id:         item.Id,
-			Name:       item.Name,
-			Image:      utils.GetImagePath(item.Image),
-			Price:      item.Price,
-			FictiSales: item.FictiSales,
-		})
-	}
-
+	list, total := service.NewItemService().GetItemList(param)
 	return ctx.JSONOk("ok", response.PageResp{
 		List:  list,
 		Total: total,

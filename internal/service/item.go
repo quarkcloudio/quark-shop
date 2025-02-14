@@ -354,9 +354,13 @@ func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategoryResp {
 }
 
 // 获取商品列表
-func (p *ItemService) GetItemList(itemListReq request.ItemListReq) ([]model.Item, int) {
-	var count int64
+func (p *ItemService) GetItemList(itemListReq request.ItemListReq) (list []response.ItemListResp, count int64) {
 	items := []model.Item{}
+
+	itemListReq.OrderRule = itemListReq.OrderByColumn + " ASC"
+	if itemListReq.IsDesc {
+		itemListReq.OrderRule = itemListReq.OrderByColumn + " DESC"
+	}
 
 	query := db.Client.Model(model.Item{}).
 		Select("items.id", "items.name", "items.image", "items.price", "items.ficti_sales").
@@ -376,5 +380,15 @@ func (p *ItemService) GetItemList(itemListReq request.ItemListReq) ([]model.Item
 		Limit(itemListReq.PageSize).
 		Find(&items)
 
-	return items, int(count)
+	for _, item := range items {
+		list = append(list, response.ItemListResp{
+			Id:         item.Id,
+			Name:       item.Name,
+			Image:      utils.GetImagePath(item.Image),
+			Price:      item.Price,
+			FictiSales: item.FictiSales,
+		})
+	}
+
+	return list, count
 }
