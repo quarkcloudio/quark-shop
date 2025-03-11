@@ -296,7 +296,7 @@ func (p *OrderService) GetOrderDetailsByOrderId(orderId interface{}) (orderDetai
 			Name:          v.Name,
 			AttrValueId:   v.AttrValueId,
 			AttrValueInfo: attrValueInfo,
-			Image:         utils.GetImagePath(v.Image),
+			Image:         utils.GetImageUrl(v.Image),
 			SKU:           v.SKU,
 			Price:         v.Price,
 			PayNum:        v.PayNum,

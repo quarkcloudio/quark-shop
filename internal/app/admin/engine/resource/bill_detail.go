@@ -48,7 +48,7 @@ func (p *BillDetail) Init(ctx *quark.Context) interface{} {
 	p.PageSize = 10
 
 	// 导出
-	p.WithExport = true
+	p.Export = true
 
 	return p
 }

@@ -7,40 +7,40 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/service"
 )
 
-// 获取文件路径
-func GetFilePath(id interface{}) string {
+// 获取文件访问Url
+func GetFileUrl(id interface{}) string {
 	if id == nil {
 		return ""
 	}
-	return service.NewAttachmentService().GetFilePath(id)
+	return service.NewAttachmentService().GetFileUrl(id)
 }
 
-// 获取多文件路径
-func GetFilePaths(id interface{}) []string {
+// 获取多文件访问Url
+func GetFileUrls(id interface{}) []string {
 	if id == nil {
 		return make([]string, 0)
 	}
-	paths := service.NewAttachmentService().GetPaths(id)
-	if paths == nil || len(paths) == 0 {
+	paths := service.NewAttachmentService().GetUrls(id)
+	if len(paths) == 0 {
 		return make([]string, 0)
 	}
 	return paths
 }
 
-// 获取图片路径
-func GetImagePath(id interface{}) string {
+// 获取图片访问Url
+func GetImageUrl(id interface{}) string {
 	if id == nil {
 		return ""
 	}
-	return service.NewAttachmentService().GetImagePath(id)
+	return service.NewAttachmentService().GetImageUrl(id)
 }
 
 // 获取多图片路径
-func GetImagePaths(id interface{}) []string {
+func GetImageUrls(id interface{}) []string {
 	if id == nil {
 		return nil
 	}
-	return service.NewAttachmentService().GetPaths(id)
+	return service.NewAttachmentService().GetUrls(id)
 }
 
 // 设置配置

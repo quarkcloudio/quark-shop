@@ -40,7 +40,7 @@ func (p *Item) Detail(ctx *quark.Context) error {
 		Id:          item.Id,
 		Name:        item.Name,
 		Price:       item.Price,
-		SliderImage: utils.GetFilePaths(item.SliderImage),
+		SliderImage: utils.GetFileUrls(item.SliderImage),
 		OtPrice:     item.OtPrice,
 		Stock:       item.Stock,
 		FictiSales:  item.FictiSales,
@@ -71,11 +71,11 @@ func (p *Item) Category(ctx *quark.Context) error {
 	itemCategories := itemService.GetCategoriesByPid(0)
 	for index, itemCategory := range itemCategories {
 		itemCategory.Title = "全部商品"
-		itemCategory.CoverId = utils.GetImagePath(itemCategory.CoverId)
+		itemCategory.CoverId = utils.GetImageUrl(itemCategory.CoverId)
 		itemCategories[index].Children = append(itemCategories[index].Children, itemCategory)
 		children := itemService.GetCategoriesByPid(itemCategory.Id)
 		for _, child := range children {
-			child.CoverId = utils.GetImagePath(child.CoverId)
+			child.CoverId = utils.GetImageUrl(child.CoverId)
 			itemCategories[index].Children = append(itemCategories[index].Children, child)
 		}
 	}

@@ -169,7 +169,7 @@ func (p *ItemService) GetItemAttrValues(itemId int) (attrValues []dto.AttrValueD
 			Stock:     v.Stock,
 			Sales:     v.Sales,
 			Price:     v.Price,
-			Image:     utils.GetImagePath(v.Image),
+			Image:     utils.GetImageUrl(v.Image),
 			Cost:      v.Cost,
 			OtPrice:   v.OtPrice,
 			AttrValue: itemAttrValue,
@@ -207,7 +207,7 @@ func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (
 	data = dto.ItemDTO{
 		Id:          item.Id,
 		MerchantId:  item.MerchantId,
-		Image:       utils.GetImagePath(item.Image),
+		Image:       utils.GetImageUrl(item.Image),
 		SliderImage: item.SliderImage,
 		Name:        item.Name,
 		Keyword:     item.Keyword,
@@ -258,7 +258,7 @@ func (p *ItemService) GetItemAttrValue(itemId int, attrValueId int, status inter
 		Stock:     itemAttrValue.Stock,
 		Sales:     itemAttrValue.Sales,
 		Price:     itemAttrValue.Price,
-		Image:     utils.GetImagePath(itemAttrValue.Image),
+		Image:     utils.GetImageUrl(itemAttrValue.Image),
 		Cost:      itemAttrValue.Cost,
 		OtPrice:   itemAttrValue.OtPrice,
 		AttrValue: itemAttrValue.AttrValue,
@@ -384,7 +384,7 @@ func (p *ItemService) GetItemList(itemListReq request.ItemListReq) (list []respo
 		list = append(list, response.ItemListResp{
 			Id:         item.Id,
 			Name:       item.Name,
-			Image:      utils.GetImagePath(item.Image),
+			Image:      utils.GetImageUrl(item.Image),
 			Price:      item.Price,
 			FictiSales: item.FictiSales,
 		})

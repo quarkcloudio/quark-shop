@@ -21,7 +21,7 @@ func (p *User) Index(ctx *quark.Context) error {
 		Username: user.Username,
 		Nickname: user.Nickname,
 		Phone:    user.Phone,
-		Avatar:   utils.GetImagePath(user.Avatar),
+		Avatar:   utils.GetImageUrl(user.Avatar),
 	}
 	return ctx.JSONOk("ok", userInfo)
 }

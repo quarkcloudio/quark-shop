@@ -93,7 +93,7 @@ func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
 			}
 			for k, orderDetail := range orderDetails {
 				name := orderDetail.Name
-				image := utils.GetImagePath(orderDetail.Image)
+				image := utils.GetImageUrl(orderDetail.Image)
 				style := ""
 				if k != 0 {
 					style = "margin-top:5px"
