@@ -53,26 +53,23 @@ func (p *RefundOrder) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 }
 
 // 菜单
-func (p *RefundOrder) Menus(ctx *quark.Context) interface{} {
-	return map[string]interface{}{
-		"type": "tab",
-		"items": []map[string]string{
-			{
-				"key":   "all",
-				"label": "全部",
-			},
-			{
-				"key":   "1",
-				"label": "申请中",
-			},
-			{
-				"key":   "2",
-				"label": "已退款",
-			},
-			{
-				"key":   "3",
-				"label": "拒绝退款",
-			},
+func (p *RefundOrder) MenuItems(ctx *quark.Context) []map[string]string {
+	return []map[string]string{
+		{
+			"key":   "all",
+			"label": "全部",
+		},
+		{
+			"key":   "1",
+			"label": "申请中",
+		},
+		{
+			"key":   "2",
+			"label": "已退款",
+		},
+		{
+			"key":   "3",
+			"label": "拒绝退款",
 		},
 	}
 }

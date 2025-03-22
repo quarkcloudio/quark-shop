@@ -47,22 +47,19 @@ func (p *BillRecord) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 }
 
 // 菜单
-func (p *BillRecord) Menus(ctx *quark.Context) interface{} {
-	return map[string]interface{}{
-		"type": "tab",
-		"items": []map[string]string{
-			{
-				"key":   "day",
-				"label": "日账单",
-			},
-			{
-				"key":   "week",
-				"label": "周账单",
-			},
-			{
-				"key":   "month",
-				"label": "月账单",
-			},
+func (p *BillRecord) MenuItems(ctx *quark.Context) []map[string]string {
+	return []map[string]string{
+		{
+			"key":   "day",
+			"label": "日账单",
+		},
+		{
+			"key":   "week",
+			"label": "周账单",
+		},
+		{
+			"key":   "month",
+			"label": "月账单",
 		},
 	}
 }

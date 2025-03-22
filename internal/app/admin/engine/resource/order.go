@@ -68,36 +68,32 @@ func (p *Order) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 }
 
 // 菜单
-func (p *Order) Menus(ctx *quark.Context) interface{} {
+func (p *Order) MenuItems(ctx *quark.Context) []map[string]string {
 	orderService := service.NewOrderService()
-
-	return map[string]interface{}{
-		"type": "tab",
-		"items": []map[string]string{
-			{
-				"key":   "all",
-				"label": "全部",
-			},
-			{
-				"key":   "pendingPayment",
-				"label": fmt.Sprintf("待支付(%d)", orderService.GetNumByStatus("pendingPayment")),
-			},
-			{
-				"key":   "pendingVerify",
-				"label": fmt.Sprintf("待核销(%d)", orderService.GetNumByStatus("pendingVerify")),
-			},
-			{
-				"key":   "completed",
-				"label": "已完成",
-			},
-			{
-				"key":   "refunded",
-				"label": "已退款",
-			},
-			{
-				"key":   "deleted",
-				"label": "已删除",
-			},
+	return []map[string]string{
+		{
+			"key":   "all",
+			"label": "全部",
+		},
+		{
+			"key":   "pendingPayment",
+			"label": fmt.Sprintf("待支付(%d)", orderService.GetNumByStatus("pendingPayment")),
+		},
+		{
+			"key":   "pendingVerify",
+			"label": fmt.Sprintf("待核销(%d)", orderService.GetNumByStatus("pendingVerify")),
+		},
+		{
+			"key":   "completed",
+			"label": "已完成",
+		},
+		{
+			"key":   "refunded",
+			"label": "已退款",
+		},
+		{
+			"key":   "deleted",
+			"label": "已删除",
 		},
 	}
 }

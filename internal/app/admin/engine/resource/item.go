@@ -47,25 +47,22 @@ func (p *Item) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 }
 
 // 菜单
-func (p *Item) Menus(ctx *quark.Context) interface{} {
+func (p *Item) MenuItems(ctx *quark.Context) []map[string]string {
 	totalNum := service.NewItemService().GetNumByStatus(nil)
 	onSalelNum := service.NewItemService().GetNumByStatus(1)
 	offSaleNum := service.NewItemService().GetNumByStatus(0)
-	return map[string]interface{}{
-		"type": "tab",
-		"items": []map[string]string{
-			{
-				"key":   "all",
-				"label": fmt.Sprintf("全部商品(%d)", totalNum),
-			},
-			{
-				"key":   "onSale",
-				"label": fmt.Sprintf("出售中的商品(%d)", onSalelNum),
-			},
-			{
-				"key":   "offSale",
-				"label": fmt.Sprintf("仓库中的商品(%d)", offSaleNum),
-			},
+	return []map[string]string{
+		{
+			"key":   "all",
+			"label": fmt.Sprintf("全部商品(%d)", totalNum),
+		},
+		{
+			"key":   "onSale",
+			"label": fmt.Sprintf("出售中的商品(%d)", onSalelNum),
+		},
+		{
+			"key":   "offSale",
+			"label": fmt.Sprintf("仓库中的商品(%d)", offSaleNum),
 		},
 	}
 }
